@@ -445,9 +445,10 @@ const CONFIG = {
   pricePerShirt: 22.00,     // used only to show a running total on the form
   currency: "$",
 
-  // Formspree endpoint that collects name/size/qty/shipping (create a new
-  // form at formspree.io for each org — do NOT reuse another form's ID).
-  formspreeEndpoint: "https://formspree.io/f/REPLACE_WITH_FORMSPREE_ID",
+  // Google Apps Script Web App URL bound to your order-tracking Google
+  // Sheet. Create a new sheet, add the Apps Script from the setup guide,
+  // deploy it as a Web App, and paste the resulting URL here.
+  sheetWebAppUrl: "https://script.google.com/macros/s/REPLACE_WITH_DEPLOYMENT_ID/exec",
 
   // Stripe Payment Link for this event. Set the Payment Link's price to
   // match pricePerShirt, and turn on "adjustable quantity" in Stripe so
@@ -524,16 +525,18 @@ orderForm.addEventListener('submit', async function(e){
   };
 
   try{
-    if (CONFIG.formspreeEndpoint.includes("REPLACE_WITH_FORMSPREE_ID")) {
+    if (CONFIG.sheetWebAppUrl.includes("REPLACE_WITH_DEPLOYMENT_ID")) {
       // No live endpoint configured yet — skip network call in preview/testing.
-      console.warn("Formspree endpoint not configured — order details were not sent anywhere.");
+      console.warn("Sheet web app URL not configured — order details were not saved anywhere.");
     } else {
-      const res = await fetch(CONFIG.formspreeEndpoint, {
+      // Apps Script web apps read form-encoded params via e.parameter, and
+      // no-cors keeps this working even though we can't read the response.
+      const body = new URLSearchParams(payload);
+      await fetch(CONFIG.sheetWebAppUrl, {
         method: "POST",
-        headers: { "Accept": "application/json", "Content-Type": "application/json" },
-        body: JSON.stringify(payload)
+        mode: "no-cors",
+        body: body
       });
-      if (!res.ok) throw new Error("Submission failed");
     }
 
     // Move to payment step
