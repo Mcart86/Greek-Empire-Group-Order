@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Greek Empire — Group Order</title>
+<style>
+  :root{
+    --navy:#0D1229;
+    --navy-2:#161B3A;
+    --gold:#B8963E;
+    --gold-light:#D4B876;
+    --cream:#F2E6C8;
+    --paper:#FAF6EC;
+    --ink:#1A1A1A;
+    --line: rgba(184,150,62,0.35);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family: Calibri, "Segoe UI", Arial, sans-serif;
+    line-height:1.5;
+  }
+  h1,h2,h3,.headline{
+    font-family: Georgia, "Times New Roman", serif;
+  }
+
+  /* ---------- Header ---------- */
+  .topbar{
+    background:var(--navy);
+    color:var(--cream);
+    padding:14px 24px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:10px;
+    border-bottom:3px solid var(--gold);
+  }
+  .topbar .brand{
+    font-family: Georgia, serif;
+    letter-spacing:0.06em;
+    font-size:15px;
+    font-weight:bold;
+    color:var(--gold-light);
+  }
+  .topbar .tagline{
+    font-size:12px;
+    color:var(--cream);
+    opacity:0.75;
+    font-style:italic;
+  }
+
+  /* ---------- Hero ---------- */
+  .hero{
+    background:var(--navy);
+    color:var(--cream);
+    padding:40px 24px 56px;
+    text-align:center;
+    position:relative;
+  }
+  .hero::after{
+    content:"";
+    position:absolute;
+    left:0; right:0; bottom:0;
+    height:6px;
+    background:
+      repeating-linear-gradient(90deg,
+        var(--gold) 0 10px,
+        transparent 10px 20px);
+    opacity:0.7;
+  }
+  .hero .eyebrow{
+    color:var(--gold-light);
+    font-size:13px;
+    letter-spacing:0.08em;
+    margin-bottom:6px;
+  }
+  .hero h1{
+    font-size:clamp(28px,4vw,42px);
+    margin:0 0 6px;
+    color:var(--cream);
+  }
+  .hero .event-name{
+    font-size:clamp(16px,2vw,20px);
+    color:var(--gold-light);
+    margin-bottom:0;
+  }
+  .hero .deadline{
+    margin-top:14px;
+    font-size:14px;
+    color:var(--cream);
+    opacity:0.85;
+  }
+
+  /* ---------- Layout ---------- */
+  .wrap{
+    max-width:1080px;
+    margin:-32px auto 0;
+    padding:0 24px 64px;
+    position:relative;
+    z-index:2;
+    display:grid;
+    grid-template-columns: 0.9fr 1.1fr;
+    gap:28px;
+  }
+  @media (max-width:860px){
+    .wrap{grid-template-columns:1fr; margin-top:-20px;}
+  }
+
+  .design-card{
+    background:var(--paper);
+    border:1px solid var(--line);
+    border-radius:4px;
+    overflow:hidden;
+    box-shadow:0 10px 30px rgba(13,18,41,0.18);
+    align-self:start;
+    position:sticky;
+    top:24px;
+  }
+  @media (max-width:860px){ .design-card{position:static;} }
+  .design-card img{
+    width:100%;
+    display:block;
+  }
+  .design-card .caption{
+    padding:14px 18px;
+    font-size:13px;
+    color:var(--navy);
+    border-top:1px solid var(--line);
+    display:flex;
+    justify-content:space-between;
+    gap:12px;
+  }
+  .design-card .caption span:last-child{
+    color:#6b6b6b;
+  }
+
+  /* ---------- Form Card ---------- */
+  .form-card{
+    background:#fff;
+    border:1px solid var(--line);
+    border-radius:4px;
+    box-shadow:0 10px 30px rgba(13,18,41,0.10);
+    padding:32px;
+  }
+  @media (max-width:600px){ .form-card{padding:22px;} }
+
+  .section-title{
+    font-size:12px;
+    letter-spacing:0.06em;
+    color:var(--gold);
+    border-bottom:1px solid var(--line);
+    padding-bottom:8px;
+    margin:0 0 18px;
+    text-transform:uppercase;
+  }
+  .section-title:not(:first-child){ margin-top:30px; }
+
+  .field{
+    margin-bottom:16px;
+  }
+  .field label{
+    display:block;
+    font-size:13px;
+    color:var(--navy);
+    margin-bottom:5px;
+    font-weight:600;
+  }
+  .field input,
+  .field select,
+  .field textarea{
+    width:100%;
+    padding:11px 12px;
+    border:1px solid #d8d2c2;
+    border-radius:3px;
+    font-family:Calibri, Arial, sans-serif;
+    font-size:15px;
+    background:#FDFCF8;
+    color:var(--ink);
+  }
+  .field input:focus,
+  .field select:focus,
+  .field textarea:focus{
+    outline:2px solid var(--gold);
+    outline-offset:1px;
+    border-color:var(--gold);
+  }
+  .row{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:14px;
+  }
+  @media (max-width:480px){ .row{grid-template-columns:1fr;} }
+
+  .qty-control{
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  .qty-control button{
+    width:36px; height:36px;
+    border:1px solid #d8d2c2;
+    background:#FDFCF8;
+    font-size:18px;
+    border-radius:3px;
+    cursor:pointer;
+    color:var(--navy);
+  }
+  .qty-control input{
+    width:60px;
+    text-align:center;
+  }
+
+  .line-total{
+    display:flex;
+    justify-content:space-between;
+    padding:14px 0 0;
+    margin-top:6px;
+    border-top:1px dashed var(--line);
+    font-size:14px;
+    color:var(--navy);
+  }
+  .line-total strong{ font-size:18px; }
+
+  .submit-btn{
+    width:100%;
+    margin-top:26px;
+    padding:15px 20px;
+    background:var(--gold);
+    color:var(--navy);
+    border:none;
+    border-radius:3px;
+    font-size:16px;
+    font-weight:bold;
+    letter-spacing:0.02em;
+    cursor:pointer;
+    font-family:Georgia, serif;
+  }
+  .submit-btn:hover{ background:var(--gold-light); }
+  .submit-btn:disabled{ opacity:0.6; cursor:not-allowed; }
+
+  .fine-print{
+    font-size:12px;
+    color:#7a7a7a;
+    margin-top:14px;
+    text-align:center;
+  }
+
+  /* ---------- Confirm / Pay step ---------- */
+  .pay-step{
+    display:none;
+    text-align:center;
+    padding:10px 0 4px;
+  }
+  .pay-step.active{ display:block; }
+  .form-step.hidden{ display:none; }
+
+  .pay-step h3{
+    color:var(--navy);
+    margin-bottom:6px;
+  }
+  .pay-step p{
+    color:#555;
+    font-size:14px;
+    margin-bottom:22px;
+  }
+  .pay-link-btn{
+    display:inline-block;
+    background:var(--navy);
+    color:var(--cream);
+    padding:15px 28px;
+    border-radius:3px;
+    text-decoration:none;
+    font-family:Georgia, serif;
+    font-weight:bold;
+    letter-spacing:0.02em;
+  }
+  .pay-link-btn:hover{ background:var(--navy-2); }
+
+  .status-msg{
+    font-size:13px;
+    margin-top:12px;
+  }
+  .status-msg.error{ color:#8a2b2b; }
+  .status-msg.ok{ color:#2b6b3b; }
+
+  footer{
+    text-align:center;
+    padding:26px 24px 40px;
+    font-size:12px;
+    color:#8a8a8a;
+  }
+  footer .signoff{
+    color:var(--navy);
+    font-family:Georgia, serif;
+    margin-bottom:4px;
+  }
+</style>
+</head>
+<body>
+
+  <div class="topbar">
+    <span class="brand">GREEK EMPIRE</span>
+    <span class="tagline">| College Branded Merchandise for the Best Years of Your Life</span>
+  </div>
+
+  <div class="hero">
+    <div class="eyebrow" id="orgLabel">CAMPUS ORGANIZATION</div>
+    <h1 id="eventTitle">Group Order</h1>
+    <div class="event-name" id="eventSubtitle">Add your order below</div>
+    <div class="deadline" id="deadlineLine"></div>
+  </div>
+
+  <div class="wrap">
+
+    <div class="design-card">
+      <img id="designImg" src="assets/design.png" alt="Order design mockup">
+      <div class="caption">
+        <span id="designPlacement">Front chest print</span>
+        <span id="designPrice">$0.00 / shirt</span>
+      </div>
+    </div>
+
+    <div class="form-card">
+
+      <!-- STEP 1: Order details -->
+      <form id="orderForm" class="form-step">
+        <div class="section-title">Your info</div>
+        <div class="field">
+          <label for="name">Full name</label>
+          <input type="text" id="name" name="name" required>
+        </div>
+        <div class="row">
+          <div class="field">
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" required>
+          </div>
+          <div class="field">
+            <label for="phone">Phone</label>
+            <input type="tel" id="phone" name="phone">
+          </div>
+        </div>
+
+        <div class="section-title">Shirt</div>
+        <div class="row">
+          <div class="field">
+            <label for="size">Size</label>
+            <select id="size" name="size" required>
+              <option value="">Select size</option>
+              <option>S</option>
+              <option>M</option>
+              <option>L</option>
+              <option>XL</option>
+              <option>2XL</option>
+              <option>3XL</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="qty">Quantity</label>
+            <div class="qty-control">
+              <button type="button" id="qtyMinus">−</button>
+              <input type="number" id="qty" name="qty" value="1" min="1" max="20" required>
+              <button type="button" id="qtyPlus">+</button>
+            </div>
+          </div>
+        </div>
+        <div class="line-total">
+          <span>Order total</span>
+          <strong id="lineTotal">$0.00</strong>
+        </div>
+
+        <div class="section-title">Shipping address</div>
+        <div class="field">
+          <label for="address1">Street address</label>
+          <input type="text" id="address1" name="address1" required>
+        </div>
+        <div class="field">
+          <label for="address2">Apt / suite (optional)</label>
+          <input type="text" id="address2" name="address2">
+        </div>
+        <div class="row">
+          <div class="field">
+            <label for="city">City</label>
+            <input type="text" id="city" name="city" required>
+          </div>
+          <div class="field">
+            <label for="state">State</label>
+            <input type="text" id="state" name="state" required maxlength="2" placeholder="e.g. NJ">
+          </div>
+        </div>
+        <div class="field">
+          <label for="zip">ZIP code</label>
+          <input type="text" id="zip" name="zip" required>
+        </div>
+
+        <button type="submit" class="submit-btn">Continue to payment</button>
+        <div class="fine-print">Card payment is collected securely on the next step. We never see or store your card number.</div>
+        <div id="formStatus" class="status-msg"></div>
+      </form>
+
+      <!-- STEP 2: Payment handoff -->
+      <div id="payStep" class="pay-step">
+        <h3>Order received</h3>
+        <p id="payCopy">Last step — pay securely to confirm your spot in the order.</p>
+        <a id="payLink" class="pay-link-btn" href="#" target="_blank" rel="noopener">Pay <span id="payAmount">$0.00</span> now</a>
+        <div class="status-msg" id="payNote" style="margin-top:18px;">Opens a secure Stripe checkout in a new tab.</div>
+      </div>
+
+    </div>
+  </div>
+
+  <footer>
+    <div class="signoff">Greek Empire | Est. 334 BC</div>
+    College Branded Merchandise for the Best Years of Your Life
+  </footer>
+
+<script>
+/* =========================================================================
+   EVENT CONFIG
+   Duplicate this file per event/org and edit the block below. Nothing
+   else in this file needs to change for a normal order run.
+   ========================================================================= */
+const CONFIG = {
+  orgLabel: "Pi Kappa Alpha",
+  eventTitle: "Fall Rush 2026",
+  eventSubtitle: "PIKE — Same Brotherhood, A Different Season",
+  deadline: "Orders close Friday, Oct 3 — ship in one batch after cutoff",
+
+  designImage: "assets/design.png",
+  designPlacement: "Front chest + full back print",
+
+  pricePerShirt: 22.00,     // used only to show a running total on the form
+  currency: "$",
+
+  // Formspree endpoint that collects name/size/qty/shipping (create a new
+  // form at formspree.io for each org — do NOT reuse another form's ID).
+  formspreeEndpoint: "https://formspree.io/f/REPLACE_WITH_FORMSPREE_ID",
+
+  // Stripe Payment Link for this event. Set the Payment Link's price to
+  // match pricePerShirt, and turn on "adjustable quantity" in Stripe so
+  // the buyer's qty carries through. Card is entered on Stripe's page,
+  // never on this one.
+  stripePaymentLink: "https://buy.stripe.com/REPLACE_WITH_PAYMENT_LINK",
+};
+
+/* ========================= Rendering (no edits needed) ================= */
+document.getElementById('orgLabel').textContent = CONFIG.orgLabel;
+document.getElementById('eventTitle').textContent = CONFIG.eventTitle;
+document.getElementById('eventSubtitle').textContent = CONFIG.eventSubtitle;
+document.getElementById('deadlineLine').textContent = CONFIG.deadline;
+document.getElementById('designImg').src = CONFIG.designImage;
+document.getElementById('designPlacement').textContent = CONFIG.designPlacement;
+document.getElementById('designPrice').textContent =
+  CONFIG.currency + CONFIG.pricePerShirt.toFixed(2) + " / shirt";
+
+const qtyInput = document.getElementById('qty');
+const lineTotalEl = document.getElementById('lineTotal');
+
+function updateTotal(){
+  const qty = Math.max(1, parseInt(qtyInput.value || "1", 10));
+  const total = qty * CONFIG.pricePerShirt;
+  lineTotalEl.textContent = CONFIG.currency + total.toFixed(2);
+  return total;
+}
+updateTotal();
+
+document.getElementById('qtyMinus').addEventListener('click', () => {
+  qtyInput.value = Math.max(1, (parseInt(qtyInput.value,10) || 1) - 1);
+  updateTotal();
+});
+document.getElementById('qtyPlus').addEventListener('click', () => {
+  qtyInput.value = Math.min(20, (parseInt(qtyInput.value,10) || 1) + 1);
+  updateTotal();
+});
+qtyInput.addEventListener('input', updateTotal);
+
+/* ========================= Submit flow =================================
+   Step 1 posts order details (no card data) to Formspree.
+   Step 2 hands the buyer to Stripe's hosted Payment Link to pay.
+   ========================================================================= */
+const orderForm = document.getElementById('orderForm');
+const formStatus = document.getElementById('formStatus');
+const payStep = document.getElementById('payStep');
+const payLink = document.getElementById('payLink');
+const payAmount = document.getElementById('payAmount');
+
+orderForm.addEventListener('submit', async function(e){
+  e.preventDefault();
+  formStatus.textContent = "";
+  formStatus.className = "status-msg";
+
+  const submitBtn = orderForm.querySelector('.submit-btn');
+  submitBtn.disabled = true;
+  submitBtn.textContent = "Submitting...";
+
+  const total = updateTotal();
+  const payload = {
+    organization: CONFIG.orgLabel,
+    event: CONFIG.eventTitle,
+    name: document.getElementById('name').value,
+    email: document.getElementById('email').value,
+    phone: document.getElementById('phone').value,
+    size: document.getElementById('size').value,
+    qty: qtyInput.value,
+    order_total: total.toFixed(2),
+    address1: document.getElementById('address1').value,
+    address2: document.getElementById('address2').value,
+    city: document.getElementById('city').value,
+    state: document.getElementById('state').value,
+    zip: document.getElementById('zip').value,
+  };
+
+  try{
+    if (CONFIG.formspreeEndpoint.includes("REPLACE_WITH_FORMSPREE_ID")) {
+      // No live endpoint configured yet — skip network call in preview/testing.
+      console.warn("Formspree endpoint not configured — order details were not sent anywhere.");
+    } else {
+      const res = await fetch(CONFIG.formspreeEndpoint, {
+        method: "POST",
+        headers: { "Accept": "application/json", "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+      if (!res.ok) throw new Error("Submission failed");
+    }
+
+    // Move to payment step
+    orderForm.classList.add('hidden');
+    payStep.classList.add('active');
+    payAmount.textContent = CONFIG.currency + total.toFixed(2);
+    payLink.href = CONFIG.stripePaymentLink;
+
+  } catch(err){
+    formStatus.textContent = "Something went wrong submitting your order — please try again.";
+    formStatus.className = "status-msg error";
+    submitBtn.disabled = false;
+    submitBtn.textContent = "Continue to payment";
+  }
+});
+</script>
+
+</body>
+</html>
