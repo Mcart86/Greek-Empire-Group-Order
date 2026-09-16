@@ -500,6 +500,11 @@ const CONFIG = {
   designImage: "assets/design.png",
   designPlacement: "Front chest + full back print",
 
+  // Set to true once STRIPE_SECRET_KEY is configured in Vercel. While
+  // false, submitting the form saves the order and shows the confirmation
+  // directly, skipping the Stripe save-card step entirely.
+  enableStripe: false,
+
   // Google Apps Script Web App URL bound to your order-tracking Google
   // Sheet. Create a new sheet, add the Apps Script from the setup guide,
   // deploy it as a Web App, and paste the resulting URL here.
@@ -577,9 +582,16 @@ orderForm.addEventListener('submit', async function(e){
       });
     }
 
-    // Hand off to Stripe to save a card on file (no charge yet). The
-    // backend creates a Checkout Session in "setup" mode and returns its
-    // hosted URL; we redirect the browser there.
+    // Hand off to Stripe to save a card on file (no charge yet), unless
+    // Stripe isn't configured yet — in that case just show confirmation.
+    if (!CONFIG.enableStripe) {
+      orderForm.classList.add('hidden');
+      payStep.classList.add('active');
+      return;
+    }
+
+    // The backend creates a Checkout Session in "setup" mode and returns
+    // its hosted URL; we redirect the browser there.
     const res = await fetch('/api/create-setup-session', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
