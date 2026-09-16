@@ -445,9 +445,10 @@ const CONFIG = {
   pricePerShirt: 22.00,     // used only to show a running total on the form
   currency: "$",
 
-  // Power Automate "When an HTTP request is received" URL. Build the flow
-  // per the setup guide, then paste the generated HTTP POST URL here.
-  powerAutomateUrl: "https://REPLACE_WITH_POWER_AUTOMATE_URL",
+  // Google Apps Script Web App URL bound to your order-tracking Google
+  // Sheet. Create a new sheet, add the Apps Script from the setup guide,
+  // deploy it as a Web App, and paste the resulting URL here.
+  sheetWebAppUrl: "https://script.google.com/macros/s/REPLACE_WITH_DEPLOYMENT_ID/exec",
 
   // Stripe Payment Link for this event. Set the Payment Link's price to
   // match pricePerShirt, and turn on "adjustable quantity" in Stripe so
@@ -524,14 +525,14 @@ orderForm.addEventListener('submit', async function(e){
   };
 
   try{
-    if (CONFIG.powerAutomateUrl.includes("REPLACE_WITH_POWER_AUTOMATE_URL")) {
+    if (CONFIG.sheetWebAppUrl.includes("REPLACE_WITH_DEPLOYMENT_ID")) {
       // No live endpoint configured yet — skip network call in preview/testing.
-      console.warn("Power Automate URL not configured — order details were not saved anywhere.");
+      console.warn("Sheet web app URL not configured — order details were not saved anywhere.");
     } else {
       // Sent as plain text (not a custom JSON content-type) so the request
-      // stays CORS-safe under no-cors; Power Automate's Parse JSON step
-      // reads the raw body and parses it regardless.
-      await fetch(CONFIG.powerAutomateUrl, {
+      // stays CORS-safe under no-cors; Apps Script's doPost reads the raw
+      // body via e.postData.contents and parses it regardless.
+      await fetch(CONFIG.sheetWebAppUrl, {
         method: "POST",
         mode: "no-cors",
         body: JSON.stringify(payload)
