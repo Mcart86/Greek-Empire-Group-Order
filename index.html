@@ -450,7 +450,7 @@ const CONFIG = {
   orgLabel: "Pi Kappa Alpha",
   eventTitle: "Fall Rush 2026",
   eventSubtitle: "PIKE — Same Brotherhood, A Different Season",
-  deadline: "Orders close Friday, Oct 3 — ship in one batch after cutoff",
+  deadline: "",
 
   designImage: "assets/design.png",
   designPlacement: "Front chest + full back print",
@@ -475,6 +475,9 @@ document.getElementById('orgLabel').textContent = CONFIG.orgLabel;
 document.getElementById('eventTitle').textContent = CONFIG.eventTitle;
 document.getElementById('eventSubtitle').textContent = CONFIG.eventSubtitle;
 document.getElementById('deadlineLine').textContent = CONFIG.deadline;
+if (!CONFIG.deadline) {
+  document.getElementById('deadlineLine').style.display = 'none';
+}
 document.getElementById('designImg').src = CONFIG.designImage;
 document.getElementById('designPlacement').textContent = CONFIG.designPlacement;
 document.getElementById('designPrice').textContent =
