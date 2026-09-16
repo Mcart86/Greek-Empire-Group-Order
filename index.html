@@ -342,7 +342,6 @@
       <img id="designImg" src="assets/design.png" alt="Order design mockup">
       <div class="caption">
         <span id="designPlacement">Front chest print</span>
-        <span id="designPrice">$0.00 / shirt</span>
       </div>
     </div>
 
@@ -389,10 +388,6 @@
             </div>
           </div>
         </div>
-        <div class="line-total">
-          <span>Order total</span>
-          <strong id="lineTotal">$0.00</strong>
-        </div>
 
         <div class="section-title">Shipping address</div>
         <div class="field">
@@ -418,18 +413,16 @@
           <input type="text" id="zip" name="zip" required>
         </div>
 
-        <button type="submit" class="submit-btn">Continue to payment</button>
+        <button type="submit" class="submit-btn">Submit Order</button>
         <div class="fine-print">By submitting your info, you agree to receive email and text marketing. Unsubscribe at any time.</div>
-        <div class="fine-print">Card payment is collected securely on the next step. We never see or store your card number.</div>
+        <div class="fine-print">Pricing depends on final order quantity. You will be charged once all orders are finalized.</div>
         <div id="formStatus" class="status-msg"></div>
       </form>
 
-      <!-- STEP 2: Payment handoff -->
+      <!-- STEP 2: Confirmation -->
       <div id="payStep" class="pay-step">
         <h3>Order received</h3>
-        <p id="payCopy">Last step — pay securely to confirm your spot in the order.</p>
-        <a id="payLink" class="pay-link-btn" href="#" target="_blank" rel="noopener">Pay <span id="payAmount">$0.00</span> now</a>
-        <div class="status-msg" id="payNote" style="margin-top:18px;">Opens a secure Stripe checkout in a new tab.</div>
+        <p>Thanks — your order is in. Final pricing depends on the total group quantity, so you'll be charged once all orders for this event are finalized.</p>
       </div>
 
     </div>
@@ -455,19 +448,10 @@ const CONFIG = {
   designImage: "assets/design.png",
   designPlacement: "Front chest + full back print",
 
-  pricePerShirt: 22.00,     // used only to show a running total on the form
-  currency: "$",
-
   // Google Apps Script Web App URL bound to your order-tracking Google
   // Sheet. Create a new sheet, add the Apps Script from the setup guide,
   // deploy it as a Web App, and paste the resulting URL here.
   sheetWebAppUrl: "https://script.google.com/macros/s/AKfycbwC7hRdCwdmDqJfeZbmYMBV_ulWe21RFc9gcwC6GxVvGrk9wA-fxN4zpj1KKLC5iF-g/exec",
-
-  // Stripe Payment Link for this event. Set the Payment Link's price to
-  // match pricePerShirt, and turn on "adjustable quantity" in Stripe so
-  // the buyer's qty carries through. Card is entered on Stripe's page,
-  // never on this one.
-  stripePaymentLink: "https://buy.stripe.com/REPLACE_WITH_PAYMENT_LINK",
 };
 
 /* ========================= Rendering (no edits needed) ================= */
@@ -480,39 +464,24 @@ if (!CONFIG.deadline) {
 }
 document.getElementById('designImg').src = CONFIG.designImage;
 document.getElementById('designPlacement').textContent = CONFIG.designPlacement;
-document.getElementById('designPrice').textContent =
-  CONFIG.currency + CONFIG.pricePerShirt.toFixed(2) + " / shirt";
 
 const qtyInput = document.getElementById('qty');
-const lineTotalEl = document.getElementById('lineTotal');
-
-function updateTotal(){
-  const qty = Math.max(1, parseInt(qtyInput.value || "1", 10));
-  const total = qty * CONFIG.pricePerShirt;
-  lineTotalEl.textContent = CONFIG.currency + total.toFixed(2);
-  return total;
-}
-updateTotal();
 
 document.getElementById('qtyMinus').addEventListener('click', () => {
   qtyInput.value = Math.max(1, (parseInt(qtyInput.value,10) || 1) - 1);
-  updateTotal();
 });
 document.getElementById('qtyPlus').addEventListener('click', () => {
   qtyInput.value = Math.min(20, (parseInt(qtyInput.value,10) || 1) + 1);
-  updateTotal();
 });
-qtyInput.addEventListener('input', updateTotal);
 
 /* ========================= Submit flow =================================
-   Step 1 posts order details (no card data) to Formspree.
-   Step 2 hands the buyer to Stripe's hosted Payment Link to pay.
+   Posts order details to the Google Sheet, then shows a confirmation.
+   No payment is collected here — final pricing depends on total group
+   quantity, so charging happens separately once orders are finalized.
    ========================================================================= */
 const orderForm = document.getElementById('orderForm');
 const formStatus = document.getElementById('formStatus');
 const payStep = document.getElementById('payStep');
-const payLink = document.getElementById('payLink');
-const payAmount = document.getElementById('payAmount');
 
 orderForm.addEventListener('submit', async function(e){
   e.preventDefault();
@@ -523,7 +492,6 @@ orderForm.addEventListener('submit', async function(e){
   submitBtn.disabled = true;
   submitBtn.textContent = "Submitting...";
 
-  const total = updateTotal();
   const payload = {
     organization: CONFIG.orgLabel,
     event: CONFIG.eventTitle,
@@ -532,7 +500,6 @@ orderForm.addEventListener('submit', async function(e){
     phone: document.getElementById('phone').value,
     size: document.getElementById('size').value,
     qty: qtyInput.value,
-    order_total: total.toFixed(2),
     address1: document.getElementById('address1').value,
     address2: document.getElementById('address2').value,
     city: document.getElementById('city').value,
@@ -555,11 +522,9 @@ orderForm.addEventListener('submit', async function(e){
       });
     }
 
-    // Move to payment step
+    // Move to confirmation
     orderForm.classList.add('hidden');
     payStep.classList.add('active');
-    payAmount.textContent = CONFIG.currency + total.toFixed(2);
-    payLink.href = CONFIG.stripePaymentLink;
 
   } catch(err){
     formStatus.textContent = "Something went wrong submitting your order — please try again.";
