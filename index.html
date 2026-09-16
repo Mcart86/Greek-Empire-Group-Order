@@ -436,8 +436,9 @@
           <input type="text" id="zip" name="zip" required>
         </div>
 
-        <button type="submit" class="submit-btn">Submit Order</button>
+        <button type="submit" class="submit-btn">Continue to Save Card</button>
         <div class="fine-print">By submitting your info, you agree to receive email and text marketing. Unsubscribe at any time.</div>
+        <div class="fine-print">Your card is saved securely via Stripe. You won't be charged until the group order closes.</div>
         <div id="formStatus" class="status-msg"></div>
       </form>
 
@@ -543,7 +544,10 @@ orderForm.addEventListener('submit', async function(e){
   submitBtn.disabled = true;
   submitBtn.textContent = "Submitting...";
 
+  const orderId = (crypto.randomUUID ? crypto.randomUUID() : String(Date.now()) + Math.random().toString(16).slice(2));
+
   const payload = {
+    orderId: orderId,
     organization: CONFIG.orgLabel,
     event: CONFIG.eventTitle,
     name: document.getElementById('name').value,
@@ -573,17 +577,61 @@ orderForm.addEventListener('submit', async function(e){
       });
     }
 
-    // Move to confirmation
-    orderForm.classList.add('hidden');
-    payStep.classList.add('active');
+    // Hand off to Stripe to save a card on file (no charge yet). The
+    // backend creates a Checkout Session in "setup" mode and returns its
+    // hosted URL; we redirect the browser there.
+    const res = await fetch('/api/create-setup-session', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        orderId: orderId,
+        email: payload.email,
+        name: payload.name,
+        organization: CONFIG.orgLabel,
+        event: CONFIG.eventTitle,
+      })
+    });
+    if (!res.ok) throw new Error('Could not start card setup');
+    const session = await res.json();
+    window.location.href = session.url;
+    return;
 
   } catch(err){
     formStatus.textContent = "Something went wrong submitting your order — please try again.";
     formStatus.className = "status-msg error";
     submitBtn.disabled = false;
-    submitBtn.textContent = "Continue to payment";
+    submitBtn.textContent = "Continue to Save Card";
   }
 });
+
+/* ========================= Return from Stripe ===========================
+   Stripe redirects back here with ?session_id=... after the card is saved.
+   We confirm the session server-side, link it to the order in the sheet,
+   then reveal the brand-voice confirmation message.
+   ========================================================================= */
+(function handleStripeReturn(){
+  const params = new URLSearchParams(window.location.search);
+  const sessionId = params.get('session_id');
+  if (!sessionId) return;
+
+  orderForm.classList.add('hidden');
+  payStep.classList.add('active');
+  const heading = payStep.querySelector('h3');
+  const body = payStep.querySelector('p');
+  heading.textContent = "Almost there...";
+  body.textContent = "Confirming your card with Stripe.";
+
+  fetch('/api/confirm-setup?session_id=' + encodeURIComponent(sessionId))
+    .then(r => { if (!r.ok) throw new Error('confirm failed'); return r.json(); })
+    .then(() => {
+      heading.textContent = "You're in.";
+      body.textContent = "Your order's locked in. Final pricing comes down to how many of you show up for this one, once the group order closes, we'll settle up.";
+    })
+    .catch(() => {
+      heading.textContent = "Card saved.";
+      body.textContent = "We hit a snag confirming the final step automatically, but your card is saved with Stripe. Reach out if you don't hear from us.";
+    });
+})();
 </script>
 
 </body>
