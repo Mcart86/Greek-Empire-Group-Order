@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Greek Empire — Group Order</title>
+<style>
+  :root{
+    --navy:#0D1229;
+    --navy-2:#161B3A;
+    --gold:#B8963E;
+    --gold-light:#D4B876;
+    --cream:#F2E6C8;
+    --paper:#FAF6EC;
+    --ink:#1A1A1A;
+    --line: rgba(184,150,62,0.35);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family: Calibri, "Segoe UI", Arial, sans-serif;
+    line-height:1.5;
+  }
+  h1,h2,h3,.headline{
+    font-family: Georgia, "Times New Roman", serif;
+  }
+
+  /* ---------- Header ---------- */
+  .topbar{
+    background:#000000;
+    color:var(--cream);
+    padding:14px 24px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    gap:6px;
+    border-bottom:3px solid var(--gold);
+  }
+  .topbar .brand{
+    font-family: Georgia, serif;
+    letter-spacing:0.06em;
+    font-size:15px;
+    font-weight:bold;
+    color:var(--gold-light);
+  }
+  .topbar .brand-logo{
+    height:26px;
+    width:auto;
+    display:block;
+  }
+  @media (max-width:600px){
+    .topbar{ flex-wrap:wrap; padding:12px 16px; }
+    .topbar .brand-logo{ height:22px; }
+  }
+  .topbar .tagline{
+    font-size:12px;
+    color:var(--cream);
+    opacity:0.75;
+    font-style:italic;
+  }
+  .group-ordering-label{
+    display:inline-block;
+    font-size:11px;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    color:var(--navy);
+    background:var(--gold);
+    padding:3px 10px;
+    border-radius:2px;
+    font-weight:bold;
+    margin-bottom:10px;
+  }
+
+  /* ---------- Hero ---------- */
+  .hero{
+    background:#000000;
+    color:var(--cream);
+    padding:40px 24px 56px;
+    text-align:center;
+    position:relative;
+  }
+  .hero::after{
+    content:"";
+    position:absolute;
+    left:0; right:0; bottom:0;
+    height:6px;
+    background:
+      repeating-linear-gradient(90deg,
+        var(--gold) 0 10px,
+        transparent 10px 20px);
+    opacity:0.7;
+  }
+  .hero .eyebrow{
+    color:var(--gold-light);
+    font-size:13px;
+    letter-spacing:0.08em;
+    margin-bottom:6px;
+  }
+  .hero h1{
+    font-size:clamp(28px,4vw,42px);
+    margin:0 0 6px;
+    color:var(--cream);
+  }
+  .hero .event-name{
+    font-size:clamp(16px,2vw,20px);
+    color:var(--gold-light);
+    margin-bottom:0;
+  }
+  .hero .deadline{
+    margin-top:14px;
+    font-size:14px;
+    color:var(--cream);
+    opacity:0.85;
+  }
+
+  /* ---------- Layout ---------- */
+  .wrap{
+    max-width:1080px;
+    margin:-32px auto 0;
+    padding:0 24px 64px;
+    position:relative;
+    z-index:2;
+    display:grid;
+    grid-template-columns: 0.9fr 1.1fr;
+    gap:28px;
+  }
+  @media (max-width:860px){
+    .wrap{grid-template-columns:1fr; margin-top:-20px;}
+  }
+
+  .design-card{
+    background:var(--paper);
+    border:1px solid var(--line);
+    border-radius:4px;
+    overflow:hidden;
+    box-shadow:0 10px 30px rgba(13,18,41,0.18);
+    align-self:start;
+    position:sticky;
+    top:24px;
+  }
+  @media (max-width:860px){ .design-card{position:static;} }
+  .design-card img{
+    width:100%;
+    display:block;
+  }
+  .design-card figure{ margin:0; }
+  .design-card figure + figure{ border-top:1px solid var(--line); }
+  .design-card figcaption{
+    padding:8px 18px;
+    font-size:11px;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    color:var(--navy);
+    background:var(--paper);
+    border-top:1px solid var(--line);
+  }
+  .garment-info{
+    border:1px solid var(--line);
+    border-radius:3px;
+    background:var(--paper);
+    padding:14px 16px;
+    margin-bottom:20px;
+  }
+  .garment-info .garment-name{
+    font-family:Georgia, serif;
+    font-weight:bold;
+    color:var(--navy);
+    font-size:14px;
+    margin-bottom:10px;
+  }
+  .garment-info table{
+    width:100%;
+    border-collapse:collapse;
+    font-size:13px;
+  }
+  .garment-info th, .garment-info td{
+    padding:7px 6px;
+    text-align:center;
+    border-bottom:1px solid var(--line);
+  }
+  .garment-info th:first-child, .garment-info td:first-child{ text-align:left; }
+  .garment-info th{
+    font-size:11px;
+    letter-spacing:0.06em;
+    text-transform:uppercase;
+    color:var(--gold);
+  }
+  .garment-info tr:last-child td{ border-bottom:none; }
+  .garment-info .garment-note{
+    font-size:12px;
+    color:#6b6b6b;
+    margin-top:8px;
+  }
+  .design-card .caption{
+    padding:14px 18px;
+    font-size:13px;
+    color:var(--navy);
+    border-top:1px solid var(--line);
+    display:flex;
+    justify-content:space-between;
+    gap:12px;
+  }
+  .design-card .caption span:last-child{
+    color:#6b6b6b;
+  }
+
+  /* ---------- Form Card ---------- */
+  .form-card{
+    background:#fff;
+    border:1px solid var(--line);
+    border-radius:4px;
+    box-shadow:0 10px 30px rgba(13,18,41,0.10);
+    padding:32px;
+  }
+  @media (max-width:600px){ .form-card{padding:22px;} }
+
+  .section-title{
+    font-size:12px;
+    letter-spacing:0.06em;
+    color:var(--gold);
+    border-bottom:1px solid var(--line);
+    padding-bottom:8px;
+    margin:0 0 18px;
+    text-transform:uppercase;
+  }
+  .section-title:not(:first-child){ margin-top:30px; }
+
+  .field{
+    margin-bottom:16px;
+  }
+  .field label{
+    display:block;
+    font-size:13px;
+    color:var(--navy);
+    margin-bottom:5px;
+    font-weight:600;
+  }
+  .field input,
+  .field select,
+  .field textarea{
+    width:100%;
+    padding:11px 12px;
+    border:1px solid #d8d2c2;
+    border-radius:3px;
+    font-family:Calibri, Arial, sans-serif;
+    font-size:15px;
+    background:#FDFCF8;
+    color:var(--ink);
+  }
+  .field input:focus,
+  .field select:focus,
+  .field textarea:focus{
+    outline:2px solid var(--gold);
+    outline-offset:1px;
+    border-color:var(--gold);
+  }
+  .row{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:14px;
+  }
+  @media (max-width:480px){ .row{grid-template-columns:1fr;} }
+
+  .qty-control{
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  .qty-control button{
+    width:36px; height:36px;
+    border:1px solid #d8d2c2;
+    background:#FDFCF8;
+    font-size:18px;
+    border-radius:3px;
+    cursor:pointer;
+    color:var(--navy);
+  }
+  .qty-control input{
+    width:60px;
+    text-align:center;
+  }
+
+  .line-total{
+    display:flex;
+    justify-content:space-between;
+    padding:14px 0 0;
+    margin-top:6px;
+    border-top:1px dashed var(--line);
+    font-size:14px;
+    color:var(--navy);
+  }
+  .line-total strong{ font-size:18px; }
+
+  .submit-btn{
+    width:100%;
+    margin-top:26px;
+    padding:15px 20px;
+    background:var(--gold);
+    color:var(--navy);
+    border:none;
+    border-radius:3px;
+    font-size:16px;
+    font-weight:bold;
+    letter-spacing:0.02em;
+    cursor:pointer;
+    font-family:Georgia, serif;
+  }
+  .submit-btn:hover{ background:var(--gold-light); }
+  .submit-btn:disabled{ opacity:0.6; cursor:not-allowed; }
+
+  .fine-print{
+    font-size:12px;
+    color:#7a7a7a;
+    margin-top:14px;
+    text-align:center;
+  }
+
+  /* ---------- Confirm / Pay step ---------- */
+  .pay-step{
+    display:none;
+    text-align:center;
+    padding:10px 0 4px;
+  }
+  .pay-step.active{ display:block; }
+  .form-step.hidden{ display:none; }
+
+  .pay-step h3{
+    color:var(--navy);
+    margin-bottom:6px;
+  }
+  .pay-step p{
+    color:#555;
+    font-size:14px;
+    margin-bottom:22px;
+  }
+  .pay-link-btn{
+    display:inline-block;
+    background:var(--navy);
+    color:var(--cream);
+    padding:15px 28px;
+    border-radius:3px;
+    text-decoration:none;
+    font-family:Georgia, serif;
+    font-weight:bold;
+    letter-spacing:0.02em;
+  }
+  .pay-link-btn:hover{ background:var(--navy-2); }
+
+  .status-msg{
+    font-size:13px;
+    margin-top:12px;
+  }
+  .status-msg.error{ color:#8a2b2b; }
+  .status-msg.ok{ color:#2b6b3b; }
+
+  footer{
+    text-align:center;
+    padding:26px 24px 40px;
+    font-size:12px;
+    color:#8a8a8a;
+  }
+  .social-links{
+    display:flex;
+    justify-content:center;
+    gap:16px;
+    margin-bottom:14px;
+  }
+  .social-links a{
+    color:var(--navy);
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    width:36px;
+    height:36px;
+    border-radius:50%;
+    border:1px solid var(--line);
+    transition:background 0.15s ease, color 0.15s ease;
+  }
+  .social-links a:hover{
+    background:var(--gold);
+    color:#fff;
+  }
+  footer .signoff{
+    color:var(--navy);
+    font-family:Georgia, serif;
+    margin-bottom:4px;
+  }
+</style>
+</head>
+<body>
+
+  <div class="topbar">
+    <img src="assets/logo.png" alt="Greek Empire — Est. 334 BC" class="brand-logo">
+    <span class="tagline">College Branded Merchandise for the Best Years of Your Life</span>
+  </div>
+
+  <div class="hero">
+    <span class="group-ordering-label">Group Ordering</span>
+    <div class="eyebrow" id="orgLabel">CAMPUS ORGANIZATION</div>
+    <h1 id="eventTitle">Group Order</h1>
+    <div class="event-name" id="eventSubtitle">Add your order below</div>
+    <div class="deadline" id="deadlineLine"></div>
+  </div>
+
+  <div class="wrap">
+
+    <div class="design-card">
+      <div id="designImages"></div>
+      <div class="caption">
+        <span id="designPlacement">Front chest print</span>
+      </div>
+    </div>
+
+    <div class="form-card">
+
+      <!-- STEP 1: Order details -->
+      <form id="orderForm" class="form-step">
+        <div class="fine-print" style="margin-bottom:18px; font-weight:bold; color:var(--navy); font-size:13px;">Pricing depends on final order quantity.<br>You will be charged once all orders are finalized.</div>
+        <div id="garmentInfo" class="garment-info" style="display:none;"></div>
+        <div class="section-title">Your info</div>
+        <div class="field">
+          <label for="name">Full name</label>
+          <input type="text" id="name" name="name" required>
+        </div>
+        <div class="row">
+          <div class="field">
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" required>
+          </div>
+          <div class="field">
+            <label for="phone">Phone</label>
+            <input type="tel" id="phone" name="phone" required>
+          </div>
+        </div>
+
+        <div class="section-title">Shirt</div>
+        <div class="row">
+          <div class="field">
+            <label for="size">Size</label>
+            <select id="size" name="size" required>
+              <option value="">Select size</option>
+              <option>S</option>
+              <option>M</option>
+              <option>L</option>
+              <option>XL</option>
+              <option>2XL</option>
+              <option>3XL</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="qty">Quantity</label>
+            <div class="qty-control">
+              <button type="button" id="qtyMinus">−</button>
+              <input type="number" id="qty" name="qty" value="1" min="1" max="20" required>
+              <button type="button" id="qtyPlus">+</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-title">Shipping address</div>
+        <div class="field">
+          <label for="address1">Street address</label>
+          <input type="text" id="address1" name="address1" required>
+        </div>
+        <div class="field">
+          <label for="address2">Apt / suite (optional)</label>
+          <input type="text" id="address2" name="address2">
+        </div>
+        <div class="row">
+          <div class="field">
+            <label for="city">City</label>
+            <input type="text" id="city" name="city" required>
+          </div>
+          <div class="field">
+            <label for="state">State</label>
+            <input type="text" id="state" name="state" required maxlength="2" placeholder="e.g. NJ">
+          </div>
+        </div>
+        <div class="field">
+          <label for="zip">ZIP code</label>
+          <input type="text" id="zip" name="zip" required>
+        </div>
+
+        <button type="submit" class="submit-btn">Continue to Save Card</button>
+        <div class="fine-print">By submitting your info, you agree to receive email and text marketing. Unsubscribe at any time.</div>
+        <div class="fine-print">Your card is saved securely via Stripe. You won't be charged until the group order closes.</div>
+        <div id="formStatus" class="status-msg"></div>
+      </form>
+
+      <!-- STEP 2: Confirmation -->
+      <div id="payStep" class="pay-step">
+        <h3>You're in.</h3>
+        <p>Your order's locked in. Final pricing comes down to how many of you show up for this one, once the group order closes, we'll settle up.</p>
+        <div class="social-links" style="margin:20px 0;">
+          <a href="https://www.instagram.com/_greekempire_" target="_blank" rel="noopener" aria-label="Follow us on Instagram">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect x="2" y="2" width="20" height="20" rx="5" stroke="currentColor" stroke-width="1.8"/>
+              <circle cx="12" cy="12" r="4.2" stroke="currentColor" stroke-width="1.8"/>
+              <circle cx="17.2" cy="6.8" r="1.1" fill="currentColor"/>
+            </svg>
+          </a>
+          <a href="https://www.tiktok.com/@_greekempire_" target="_blank" rel="noopener" aria-label="Follow us on TikTok">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M16.5 3c.3 2.2 1.7 3.9 4 4.2v3.1c-1.4 0-2.8-.4-4-1.2v6.6c0 3.4-2.7 6.1-6.1 6.1S4.3 19.1 4.3 15.7c0-3.3 2.6-6 5.9-6.1v3.2c-1.5.1-2.7 1.4-2.7 2.9 0 1.6 1.3 2.9 2.9 2.9s2.9-1.3 2.9-2.9V3h3.2z" fill="currentColor"/>
+            </svg>
+          </a>
+        </div>
+        <a href="https://greekempire.com" target="_blank" rel="noopener" class="pay-link-btn">Visit Greekempire.com</a>
+      </div>
+
+    </div>
+  </div>
+
+  <footer>
+    <div class="social-links">
+      <a href="https://www.instagram.com/_greekempire_" target="_blank" rel="noopener" aria-label="Follow us on Instagram">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="2" y="2" width="20" height="20" rx="5" stroke="currentColor" stroke-width="1.8"/>
+          <circle cx="12" cy="12" r="4.2" stroke="currentColor" stroke-width="1.8"/>
+          <circle cx="17.2" cy="6.8" r="1.1" fill="currentColor"/>
+        </svg>
+      </a>
+      <a href="https://www.tiktok.com/@_greekempire_" target="_blank" rel="noopener" aria-label="Follow us on TikTok">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M16.5 3c.3 2.2 1.7 3.9 4 4.2v3.1c-1.4 0-2.8-.4-4-1.2v6.6c0 3.4-2.7 6.1-6.1 6.1S4.3 19.1 4.3 15.7c0-3.3 2.6-6 5.9-6.1v3.2c-1.5.1-2.7 1.4-2.7 2.9 0 1.6 1.3 2.9 2.9 2.9s2.9-1.3 2.9-2.9V3h3.2z" fill="currentColor"/>
+        </svg>
+      </a>
+    </div>
+    <div class="signoff">Greek Empire | Est. 334 BC</div>
+    College Branded Merchandise for the Best Years of Your Life
+  </footer>
+
+<script>
+/* =========================================================================
+   EVENT CONFIG
+   Duplicate this file per event/org and edit the block below. Nothing
+   else in this file needs to change for a normal order run.
+   ========================================================================= */
+const CONFIG = {
+  orgLabel: "Lambda Omega Zeta",
+  eventTitle: "Halloweekend 2026",
+  eventSubtitle: "",
+  deadline: "",
+
+  // One or more images shown in the design card. Add a "label" to caption each.
+  designImages: [
+    { src: "assets/halloweekend-2257-back.png", label: "Back" },
+    { src: "assets/halloweekend-2257-chest.png", label: "Left chest" },
+  ],
+  designPlacement: "Full back print + left chest",
+
+  // Optional garment + price breaks. Leave as null to hide the block.
+  // Example:
+  // garment: {
+  //   name: "Gildan Heavy Cotton 100% Cotton T-Shirt",
+  //   tiers: ["1+", "12+", "25+", "100+"],
+  //   colors: [ { name: "Sport Grey", prices: ["$17.25", "$14.50", "$12.99", "$9.75"] } ],
+  // },
+  garment: {
+    name: "Gildan Heavy Cotton 100% Cotton T-Shirt",
+    tiers: ["1+", "12+", "25+", "100+"],
+    colors: [
+      { name: "Sport Grey", prices: ["$17.25", "$14.50", "$12.99", "$9.75"] },
+    ],
+  },
+
+  // Set to true once STRIPE_SECRET_KEY is configured in Vercel. While
+  // false, submitting the form saves the order and shows the confirmation
+  // directly, skipping the Stripe save-card step entirely.
+  enableStripe: true,
+
+  // Google Apps Script Web App URL bound to your order-tracking Google
+  // Sheet. Create a new sheet, add the Apps Script from the setup guide,
+  // deploy it as a Web App, and paste the resulting URL here.
+  sheetWebAppUrl: "https://script.google.com/macros/s/AKfycbwC7hRdCwdmDqJfeZbmYMBV_uIWe21RFc9gcwC6GxVvGrk9wA-fxN4zpj1KKLC5iF-g/exec",
+};
+
+/* ========================= Rendering (no edits needed) ================= */
+document.getElementById('orgLabel').textContent = CONFIG.orgLabel;
+document.getElementById('eventTitle').textContent = CONFIG.eventTitle;
+document.getElementById('eventSubtitle').textContent = CONFIG.eventSubtitle;
+if (!CONFIG.eventSubtitle) {
+  document.getElementById('eventSubtitle').style.display = 'none';
+}
+document.getElementById('deadlineLine').textContent = CONFIG.deadline;
+if (!CONFIG.deadline) {
+  document.getElementById('deadlineLine').style.display = 'none';
+}
+document.getElementById('designPlacement').textContent = CONFIG.designPlacement;
+
+(function renderDesignImages(){
+  const wrap = document.getElementById('designImages');
+  CONFIG.designImages.forEach(function(item){
+    const fig = document.createElement('figure');
+    const img = document.createElement('img');
+    img.src = item.src;
+    img.alt = item.label ? ('Design: ' + item.label) : 'Order design mockup';
+    fig.appendChild(img);
+    if (item.label) {
+      const cap = document.createElement('figcaption');
+      cap.textContent = item.label;
+      fig.appendChild(cap);
+    }
+    wrap.appendChild(fig);
+  });
+})();
+
+(function renderGarment(){
+  const g = CONFIG.garment;
+  if (!g) return;
+  const box = document.getElementById('garmentInfo');
+  const esc = function(t){ const d = document.createElement('div'); d.textContent = t; return d.innerHTML; };
+  let html = '<div class="garment-name">' + esc(g.name) + '</div>';
+  html += '<table><thead><tr><th>Qty</th>';
+  g.tiers.forEach(function(t){ html += '<th>' + esc(t) + '</th>'; });
+  html += '</tr></thead><tbody>';
+  g.colors.forEach(function(c){
+    html += '<tr><td>' + esc(c.name) + '</td>';
+    c.prices.forEach(function(p){ html += '<td>' + esc(p) + '</td>'; });
+    html += '</tr>';
+  });
+  html += '</tbody></table>';
+  html += '<div class="garment-note">Price per shirt, based on the total quantity ordered by the group.</div>';
+  box.innerHTML = html;
+  box.style.display = 'block';
+})();
+
+const qtyInput = document.getElementById('qty');
+
+document.getElementById('qtyMinus').addEventListener('click', () => {
+  qtyInput.value = Math.max(1, (parseInt(qtyInput.value,10) || 1) - 1);
+});
+document.getElementById('qtyPlus').addEventListener('click', () => {
+  qtyInput.value = Math.min(20, (parseInt(qtyInput.value,10) || 1) + 1);
+});
+
+/* ========================= Submit flow =================================
+   Posts order details to the Google Sheet, then shows a confirmation.
+   No payment is collected here — final pricing depends on total group
+   quantity, so charging happens separately once orders are finalized.
+   ========================================================================= */
+const orderForm = document.getElementById('orderForm');
+const formStatus = document.getElementById('formStatus');
+const payStep = document.getElementById('payStep');
+
+orderForm.addEventListener('submit', async function(e){
+  e.preventDefault();
+  formStatus.textContent = "";
+  formStatus.className = "status-msg";
+
+  const submitBtn = orderForm.querySelector('.submit-btn');
+  submitBtn.disabled = true;
+  submitBtn.textContent = "Submitting...";
+
+  const orderId = (crypto.randomUUID ? crypto.randomUUID() : String(Date.now()) + Math.random().toString(16).slice(2));
+
+  const payload = {
+    orderId: orderId,
+    organization: CONFIG.orgLabel,
+    event: CONFIG.eventTitle,
+    name: document.getElementById('name').value,
+    email: document.getElementById('email').value,
+    phone: document.getElementById('phone').value,
+    size: document.getElementById('size').value,
+    qty: qtyInput.value,
+    address1: document.getElementById('address1').value,
+    address2: document.getElementById('address2').value,
+    city: document.getElementById('city').value,
+    state: document.getElementById('state').value,
+    zip: document.getElementById('zip').value,
+  };
+
+  try{
+    if (CONFIG.sheetWebAppUrl.includes("REPLACE_WITH_DEPLOYMENT_ID")) {
+      // No live endpoint configured yet — skip network call in preview/testing.
+      console.warn("Sheet web app URL not configured — order details were not saved anywhere.");
+    } else {
+      // Sent as plain text (not a custom JSON content-type) so the request
+      // stays CORS-safe under no-cors; Apps Script's doPost reads the raw
+      // body via e.postData.contents and parses it regardless.
+      await fetch(CONFIG.sheetWebAppUrl, {
+        method: "POST",
+        mode: "no-cors",
+        body: JSON.stringify(payload)
+      });
+    }
+
+    // Hand off to Stripe to save a card on file (no charge yet), unless
+    // Stripe isn't configured yet — in that case just show confirmation.
+    if (!CONFIG.enableStripe) {
+      orderForm.classList.add('hidden');
+      payStep.classList.add('active');
+      return;
+    }
+
+    // The backend creates a Checkout Session in "setup" mode and returns
+    // its hosted URL; we redirect the browser there.
+    const res = await fetch('/api/create-setup-session', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        orderId: orderId,
+        email: payload.email,
+        name: payload.name,
+        organization: CONFIG.orgLabel,
+        event: CONFIG.eventTitle,
+        returnPath: window.location.pathname,
+      })
+    });
+    if (!res.ok) throw new Error('Could not start card setup');
+    const session = await res.json();
+    window.location.href = session.url;
+    return;
+
+  } catch(err){
+    formStatus.textContent = "Something went wrong submitting your order — please try again.";
+    formStatus.className = "status-msg error";
+    submitBtn.disabled = false;
+    submitBtn.textContent = "Continue to Save Card";
+  }
+});
+
+/* ========================= Return from Stripe ===========================
+   Stripe redirects back here with ?session_id=... after the card is saved.
+   We confirm the session server-side, link it to the order in the sheet,
+   then reveal the brand-voice confirmation message.
+   ========================================================================= */
+(function handleStripeReturn(){
+  const params = new URLSearchParams(window.location.search);
+  const sessionId = params.get('session_id');
+  if (!sessionId) return;
+
+  orderForm.classList.add('hidden');
+  payStep.classList.add('active');
+  const heading = payStep.querySelector('h3');
+  const body = payStep.querySelector('p');
+  heading.textContent = "Almost there...";
+  body.textContent = "Confirming your card with Stripe.";
+
+  fetch('/api/confirm-setup?session_id=' + encodeURIComponent(sessionId))
+    .then(r => { if (!r.ok) throw new Error('confirm failed'); return r.json(); })
+    .then(() => {
+      heading.textContent = "You're in.";
+      body.textContent = "Your order's locked in. Final pricing comes down to how many of you show up for this one, once the group order closes, we'll settle up.";
+    })
+    .catch(() => {
+      heading.textContent = "Card saved.";
+      body.textContent = "We hit a snag confirming the final step automatically, but your card is saved with Stripe. Reach out if you don't hear from us.";
+    });
+})();
+</script>
+
+</body>
+</html>
