@@ -21,13 +21,22 @@ module.exports = async (req, res) => {
   const stripe = Stripe(stripeKey);
 
   try {
-    const { orderId, email, name, organization, event } = req.body || {};
+    const { orderId, email, name, organization, event, returnPath } = req.body || {};
     if (!orderId || !email) {
       res.status(400).json({ error: 'Missing orderId or email' });
       return;
     }
 
     const origin = `https://${req.headers.host}`;
+
+    // Send the buyer back to the same event page they ordered from. Only
+    // plain same-site paths are accepted (no protocol-relative or external).
+    const safePath =
+      typeof returnPath === 'string' &&
+      /^\/[A-Za-z0-9\-_.\/]*$/.test(returnPath) &&
+      !returnPath.startsWith('//')
+        ? returnPath
+        : '/';
 
     // Find or create a Stripe Customer for this email so the saved card
     // is attached to a customer record we can charge later.
@@ -40,8 +49,8 @@ module.exports = async (req, res) => {
       mode: 'setup',
       customer: customer.id,
       payment_method_types: ['card'],
-      success_url: `${origin}/?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${origin}/`,
+      success_url: `${origin}${safePath}?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${origin}${safePath}`,
       metadata: {
         orderId: orderId,
         organization: organization || '',

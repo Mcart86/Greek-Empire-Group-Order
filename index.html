@@ -147,6 +147,54 @@
     width:100%;
     display:block;
   }
+  .design-card figure{ margin:0; }
+  .design-card figure + figure{ border-top:1px solid var(--line); }
+  .design-card figcaption{
+    padding:8px 18px;
+    font-size:11px;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    color:var(--navy);
+    background:var(--paper);
+    border-top:1px solid var(--line);
+  }
+  .garment-info{
+    border:1px solid var(--line);
+    border-radius:3px;
+    background:var(--paper);
+    padding:14px 16px;
+    margin-bottom:20px;
+  }
+  .garment-info .garment-name{
+    font-family:Georgia, serif;
+    font-weight:bold;
+    color:var(--navy);
+    font-size:14px;
+    margin-bottom:10px;
+  }
+  .garment-info table{
+    width:100%;
+    border-collapse:collapse;
+    font-size:13px;
+  }
+  .garment-info th, .garment-info td{
+    padding:7px 6px;
+    text-align:center;
+    border-bottom:1px solid var(--line);
+  }
+  .garment-info th:first-child, .garment-info td:first-child{ text-align:left; }
+  .garment-info th{
+    font-size:11px;
+    letter-spacing:0.06em;
+    text-transform:uppercase;
+    color:var(--gold);
+  }
+  .garment-info tr:last-child td{ border-bottom:none; }
+  .garment-info .garment-note{
+    font-size:12px;
+    color:#6b6b6b;
+    margin-top:8px;
+  }
   .design-card .caption{
     padding:14px 18px;
     font-size:13px;
@@ -361,7 +409,7 @@
   <div class="wrap">
 
     <div class="design-card">
-      <img id="designImg" src="assets/design.png" alt="Order design mockup">
+      <div id="designImages"></div>
       <div class="caption">
         <span id="designPlacement">Front chest print</span>
       </div>
@@ -372,6 +420,7 @@
       <!-- STEP 1: Order details -->
       <form id="orderForm" class="form-step">
         <div class="fine-print" style="margin-bottom:18px; font-weight:bold; color:var(--navy); font-size:13px;">Pricing depends on final order quantity.<br>You will be charged once all orders are finalized.</div>
+        <div id="garmentInfo" class="garment-info" style="display:none;"></div>
         <div class="section-title">Your info</div>
         <div class="field">
           <label for="name">Full name</label>
@@ -497,8 +546,20 @@ const CONFIG = {
   eventSubtitle: "PIKE — Same Brotherhood, A Different Season",
   deadline: "",
 
-  designImage: "assets/design.png",
+  // One or more images shown in the design card. Add a "label" to caption each.
+  designImages: [
+    { src: "assets/design.png", label: "" },
+  ],
   designPlacement: "Front chest + full back print",
+
+  // Optional garment + price breaks. Leave as null to hide the block.
+  // Example:
+  // garment: {
+  //   name: "Gildan Heavy Cotton 100% Cotton T-Shirt",
+  //   tiers: ["1+", "12+", "25+", "100+"],
+  //   colors: [ { name: "Sport Grey", prices: ["$17.25", "$14.50", "$12.99", "$9.75"] } ],
+  // },
+  garment: null,
 
   // Set to true once STRIPE_SECRET_KEY is configured in Vercel. While
   // false, submitting the form saves the order and shows the confirmation
@@ -515,12 +576,51 @@ const CONFIG = {
 document.getElementById('orgLabel').textContent = CONFIG.orgLabel;
 document.getElementById('eventTitle').textContent = CONFIG.eventTitle;
 document.getElementById('eventSubtitle').textContent = CONFIG.eventSubtitle;
+if (!CONFIG.eventSubtitle) {
+  document.getElementById('eventSubtitle').style.display = 'none';
+}
 document.getElementById('deadlineLine').textContent = CONFIG.deadline;
 if (!CONFIG.deadline) {
   document.getElementById('deadlineLine').style.display = 'none';
 }
-document.getElementById('designImg').src = CONFIG.designImage;
 document.getElementById('designPlacement').textContent = CONFIG.designPlacement;
+
+(function renderDesignImages(){
+  const wrap = document.getElementById('designImages');
+  CONFIG.designImages.forEach(function(item){
+    const fig = document.createElement('figure');
+    const img = document.createElement('img');
+    img.src = item.src;
+    img.alt = item.label ? ('Design: ' + item.label) : 'Order design mockup';
+    fig.appendChild(img);
+    if (item.label) {
+      const cap = document.createElement('figcaption');
+      cap.textContent = item.label;
+      fig.appendChild(cap);
+    }
+    wrap.appendChild(fig);
+  });
+})();
+
+(function renderGarment(){
+  const g = CONFIG.garment;
+  if (!g) return;
+  const box = document.getElementById('garmentInfo');
+  const esc = function(t){ const d = document.createElement('div'); d.textContent = t; return d.innerHTML; };
+  let html = '<div class="garment-name">' + esc(g.name) + '</div>';
+  html += '<table><thead><tr><th>Qty</th>';
+  g.tiers.forEach(function(t){ html += '<th>' + esc(t) + '</th>'; });
+  html += '</tr></thead><tbody>';
+  g.colors.forEach(function(c){
+    html += '<tr><td>' + esc(c.name) + '</td>';
+    c.prices.forEach(function(p){ html += '<td>' + esc(p) + '</td>'; });
+    html += '</tr>';
+  });
+  html += '</tbody></table>';
+  html += '<div class="garment-note">Price per shirt, based on the total quantity ordered by the group.</div>';
+  box.innerHTML = html;
+  box.style.display = 'block';
+})();
 
 const qtyInput = document.getElementById('qty');
 
@@ -601,6 +701,7 @@ orderForm.addEventListener('submit', async function(e){
         name: payload.name,
         organization: CONFIG.orgLabel,
         event: CONFIG.eventTitle,
+        returnPath: window.location.pathname,
       })
     });
     if (!res.ok) throw new Error('Could not start card setup');
