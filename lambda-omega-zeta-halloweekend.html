@@ -195,6 +195,23 @@
     color:#6b6b6b;
     margin-top:8px;
   }
+  .ship-to-note{
+    border:1px solid var(--line);
+    border-left:3px solid var(--gold);
+    background:var(--paper);
+    padding:12px 14px;
+    margin:26px 0 6px;
+    font-size:13px;
+    color:var(--navy);
+  }
+  .ship-to-note strong{
+    display:block;
+    font-size:11px;
+    letter-spacing:0.06em;
+    text-transform:uppercase;
+    color:var(--gold);
+    margin-bottom:4px;
+  }
   .design-card .caption{
     padding:14px 18px;
     font-size:13px;
@@ -461,6 +478,9 @@
           </div>
         </div>
 
+        <div id="shipToNote" class="ship-to-note" style="display:none;"></div>
+
+        <div id="shippingFields">
         <div class="section-title">Shipping address</div>
         <div class="field">
           <label for="address1">Street address</label>
@@ -483,6 +503,7 @@
         <div class="field">
           <label for="zip">ZIP code</label>
           <input type="text" id="zip" name="zip" required>
+        </div>
         </div>
 
         <button type="submit" class="submit-btn">Continue to Save Card</button>
@@ -573,6 +594,11 @@ const CONFIG = {
   // directly, skipping the Stripe save-card step entirely.
   enableStripe: true,
 
+  // Optional: ship every order to one fixed address (for example the chapter
+  // house). When set, buyers are not asked for an address and see this one
+  // instead. Leave as null to collect each buyer's own shipping address.
+  shipTo: { address1: "701 S University Ave", address2: "", city: "Mount Pleasant", state: "MI", zip: "48858" },
+
   // Also send each order to the Greek Empire CRM dashboard. Failures here never block checkout.
   crmIntakeUrl: "https://greek-empire-crm-khaki.vercel.app/api/group-order-intake",
 
@@ -632,6 +658,19 @@ document.getElementById('designPlacement').textContent = CONFIG.designPlacement;
   box.style.display = 'block';
 })();
 
+(function renderShipTo(){
+  const s = CONFIG.shipTo;
+  if (!s) return;
+  document.getElementById('shippingFields').style.display = 'none';
+  // Hidden fields that are still required would stop the form from submitting.
+  document.querySelectorAll('#shippingFields input').forEach(function(el){ el.disabled = true; });
+  const esc = function(t){ const d = document.createElement('div'); d.textContent = t; return d.innerHTML; };
+  const street = [s.address1, s.address2].filter(Boolean).join(', ');
+  const note = document.getElementById('shipToNote');
+  note.innerHTML = '<strong>Shipping</strong>All orders ship to: ' + esc(street + ', ' + s.city + ', ' + s.state + ' ' + s.zip);
+  note.style.display = 'block';
+})();
+
 const qtyInput = document.getElementById('qty');
 
 document.getElementById('qtyMinus').addEventListener('click', () => {
@@ -670,11 +709,11 @@ orderForm.addEventListener('submit', async function(e){
     phone: document.getElementById('phone').value,
     size: document.getElementById('size').value,
     qty: qtyInput.value,
-    address1: document.getElementById('address1').value,
-    address2: document.getElementById('address2').value,
-    city: document.getElementById('city').value,
-    state: document.getElementById('state').value,
-    zip: document.getElementById('zip').value,
+    address1: CONFIG.shipTo ? CONFIG.shipTo.address1 : document.getElementById('address1').value,
+    address2: CONFIG.shipTo ? (CONFIG.shipTo.address2 || '') : document.getElementById('address2').value,
+    city: CONFIG.shipTo ? CONFIG.shipTo.city : document.getElementById('city').value,
+    state: CONFIG.shipTo ? CONFIG.shipTo.state : document.getElementById('state').value,
+    zip: CONFIG.shipTo ? CONFIG.shipTo.zip : document.getElementById('zip').value,
   };
 
   try{
