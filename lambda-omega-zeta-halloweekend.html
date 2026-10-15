@@ -573,6 +573,9 @@ const CONFIG = {
   // directly, skipping the Stripe save-card step entirely.
   enableStripe: true,
 
+  // Also send each order to the Greek Empire CRM dashboard. Failures here never block checkout.
+  crmIntakeUrl: "https://greek-empire-crm-khaki.vercel.app/api/group-order-intake",
+
   // Google Apps Script Web App URL bound to your order-tracking Google
   // Sheet. Create a new sheet, add the Apps Script from the setup guide,
   // deploy it as a Web App, and paste the resulting URL here.
@@ -688,6 +691,22 @@ orderForm.addEventListener('submit', async function(e){
         body: JSON.stringify(payload)
       });
     }
+
+    // Mirror the order to the CRM dashboard. Fire-and-forget: keepalive lets it
+    // finish while the browser redirects to Stripe, and errors are ignored.
+    try {
+      if (CONFIG.crmIntakeUrl) {
+        fetch(CONFIG.crmIntakeUrl, {
+          method: "POST",
+          mode: "no-cors",
+          keepalive: true,
+          body: JSON.stringify(Object.assign({}, payload, {
+            slug: window.location.pathname.replace(/^\/|\.html$/g, ""),
+            shirt: (CONFIG.garment && CONFIG.garment.name) || ""
+          }))
+        }).catch(function(){});
+      }
+    } catch (crmErr) { /* never block the order */ }
 
     // Hand off to Stripe to save a card on file (no charge yet), unless
     // Stripe isn't configured yet — in that case just show confirmation.
