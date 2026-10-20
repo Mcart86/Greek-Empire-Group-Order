@@ -590,7 +590,7 @@ const CONFIG = {
   // Optional: ship every order to one fixed address (for example the chapter
   // house). When set, buyers are not asked for an address and see this one
   // instead. Leave as null to collect each buyer's own shipping address.
-  shipTo: null,
+  shipTo: { address1: "41 E 9th Ave", address2: "", city: "Columbus", state: "OH", zip: "43201" },
 
   // Also send each order to the Greek Empire CRM dashboard. Failures here never block checkout.
   crmIntakeUrl: "https://greek-empire-crm-khaki.vercel.app/api/group-order-intake",
