@@ -132,6 +132,26 @@
     .wrap{grid-template-columns:1fr; margin-top:-20px;}
   }
 
+  .proof-card{
+    grid-column:1 / -1;
+    background:var(--paper);
+    border:1px solid var(--line);
+    border-radius:4px;
+    overflow:hidden;
+    box-shadow:0 10px 30px rgba(13,18,41,0.18);
+    text-align:center;
+  }
+  .proof-card a{ display:block; }
+  .proof-card img{ width:100%; max-width:760px; display:block; margin:0 auto; }
+  .proof-card .caption{
+    padding:8px 18px;
+    font-size:11px;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    color:var(--navy);
+    border-top:1px solid var(--line);
+  }
+
   .design-card{
     background:var(--paper);
     border:1px solid var(--line);
@@ -424,6 +444,13 @@
   </div>
 
   <div class="wrap">
+
+    <div class="proof-card">
+      <a href="assets/halloweekend-2257-proof.png" target="_blank" rel="noopener">
+        <img src="assets/halloweekend-2257-proof.png" alt="Lambda Omega Zeta Halloweekend 2026 shirt proof, front and back">
+      </a>
+      <div class="caption">Shirt proof &middot; tap to enlarge</div>
+    </div>
 
     <div class="design-card">
       <div id="designImages"></div>
