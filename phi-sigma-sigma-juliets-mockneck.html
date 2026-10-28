@@ -516,7 +516,7 @@
         </div>
         </div>
 
-        <button type="submit" class="submit-btn">Continue to Save Card</button>
+        <button type="submit" class="submit-btn">Submit CC Info</button>
         <div class="fine-print">By submitting your info, you agree to receive email and text marketing. Unsubscribe at any time.</div>
         <div class="fine-print">Your card is saved securely via Stripe. You won't be charged until the group order closes.</div>
         <div id="formStatus" class="status-msg"></div>
@@ -791,7 +791,7 @@ orderForm.addEventListener('submit', async function(e){
     formStatus.textContent = "Something went wrong submitting your order — please try again.";
     formStatus.className = "status-msg error";
     submitBtn.disabled = false;
-    submitBtn.textContent = "Continue to Save Card";
+    submitBtn.textContent = "Submit CC Info";
   }
 });
 
